@@ -1,8 +1,10 @@
 import Banner from "@/components/Banner";
+import Container from "@/components/Container";
 import Footer from "@/components/Footer";
+import NowPlaying from "@/components/NowPlaying";
 import Head from "next/head";
 
-export default function Home() {
+export default function Home({ data }) {
   return (
     <>
       <Head>
@@ -12,9 +14,20 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="text-slate-200">
-        <Banner />
+        <Banner movie={data[1]} />
+        <NowPlaying movie={data.slice(0, 6)} />
+        <Container />
         <Footer />
       </main>
     </>
   );
+}
+
+export async function getServerSideProps() {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}movie/now_playing/?api_key=${process.env.NEXT_PUBLIC_API_KEY}&language=en-US`
+  );
+  const data = await res.json();
+
+  return { props: { data: data.results } };
 }
