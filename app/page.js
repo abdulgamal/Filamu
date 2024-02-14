@@ -4,7 +4,12 @@ import Footer from "@/components/Footer";
 
 async function fetchMovies() {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}movie/now_playing/?api_key=${process.env.NEXT_PUBLIC_API_KEY}&language=en-US`
+    `${process.env.NEXT_PUBLIC_BASE_URL}movie/now_playing/?api_key=${process.env.NEXT_PUBLIC_API_KEY}&language=en-US`,
+    {
+      next: {
+        revalidate: 1000,
+      },
+    }
   );
   return response.json();
 }
@@ -12,7 +17,7 @@ export default async function Home() {
   const { results } = await fetchMovies();
   return (
     <main className="min-h-screen text-slate-200">
-      <Banner movie={results[1]} />
+      <Banner movie={results?.[0]} />
       <Container />
       <Footer />
     </main>
